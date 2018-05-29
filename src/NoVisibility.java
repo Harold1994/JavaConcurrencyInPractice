@@ -1,20 +1,21 @@
+import java.util.Hashtable;
+import java.util.Vector;
+
 public class NoVisibility {
 	private static int number;
 	private static boolean ready;
 	private static class ReaderThread extends Thread {
 		@Override
 		public void run() {
-			while(!ready) {
+			while(!ready)
 				Thread.yield();
-				System.out.println("wait");
-			}
 			System.out.println(number);
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		new ReaderThread().start();
-		number = 5;
 		ready = true;
+        number = 5;
 	}
 }
