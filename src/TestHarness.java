@@ -1,3 +1,6 @@
+import javafx.concurrent.Task;
+
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -33,6 +36,30 @@ public class TestHarness {
         endGate.await();
         long end = System.nanoTime();
         return end - start;
+    }
+
+    /**
+     * @author harold
+     * @Title: getNextTask
+     * @Description: 不可取消的任务在退出前恢复中断
+     * @date 2018/5/31下午2:10
+     */
+
+    public Task getNextTask(BlockingQueue<Task> queue) {
+        boolean interrupted = false;
+        try {
+            while (true) {
+                try {
+                    return queue.take();
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                }
+            }
+        }
+        finally {
+            if (interrupted)
+                Thread.currentThread().interrupt();
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {
